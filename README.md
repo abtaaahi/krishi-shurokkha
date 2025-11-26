@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Krishi Shurokkha
 
-## Getting Started
+**Developed by:** ERROR 404! EDU HackFest Team  
 
-First, run the development server:
+A hackfest project aimed at reducing food loss in Bangladesh by empowering farmers with timely insights and tools. Mobile-first, offline-ready, and farmer-friendly.
+
+---
+
+## 🚀 Project Overview
+
+**Krishi Shurokkha** focuses on post-harvest crop protection. It currently implements two core features:
+
+1. **Storytelling Landing Page**  
+   - Engaging UI to present the food loss problem and introduce the solution.  
+   - Visual metaphor: Data → Warning → Action → Saved Food.  
+   - Supports Bangla and English for accessibility.
+
+2. **Basic Crop Health Scanner (AI Wrapper)**  
+   - Farmers can upload crop photos.  
+   - Pre-trained AI model detects crop status: *Fresh* or *Rotten*.  
+   - Quick, lightweight, and mobile-friendly.
+
+---
+
+## 🌐 Tech Stack
+
+- **Frontend & Backend:** Next.js (App Router)  
+- **Styling:** Tailwind CSS, shadcn/ui  
+- **State Management:** Zustand / Jotai  
+- **Offline Storage:** Dexie.js / localForage  
+- **Backend DB:** Supabase PostgreSQL  
+- **API Integration:** OpenWeatherMap, HuggingFace Inference API  
+- **Animations & Visuals:** Framer Motion, React Three Fiber (optional)  
+- **Data Export:** PapaParse, FileSaver  
+
+---
+
+## 📦 Features
+
+- Multi-language support (Bangla/English)  
+- Mobile-first responsive design  
+- Offline-first data saving with auto-sync  
+- Farmer registration and crop batch management  
+- CSV/JSON export for crop and achievement data  
+- AI-powered crop health detection  
+- Storytelling landing page with strong visual metaphor  
+
+---
+
+## ⚡ Getting Started
+
+1. **Clone the repo**
+```bash
+git clone https://github.com/<your-username>/krishi-shurokkha.git
+cd krishi-shurokkha
+````
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+3. **Set up environment variables** in `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+WEATHER_API_KEY=<your-weather-api-key>
+```
+
+4. **Run the development server**
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📄 License
 
-## Learn More
+This project is open-source and free to use under the MIT License.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🤝 Team
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**ERROR 404! EDU HackFest Team**
 
-## Deploy on Vercel
+* Concept, design, and development for Krishi Shurokkha.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
