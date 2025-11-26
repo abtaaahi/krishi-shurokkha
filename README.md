@@ -90,5 +90,3 @@ This project is open-source and free to use under the MIT License.
 **ERROR 404! EDU HackFest Team**
 
 * Concept, design, and development for Krishi Shurokkha.
-
-```
