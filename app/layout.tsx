@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Krishi Shurokkha",
+  title: "কৃষি সুরক্ষা",
   description: "Developed by ERROR 404! EDU HackFest Team.",
 };
 
