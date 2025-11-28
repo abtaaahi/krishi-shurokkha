@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Profile {
@@ -15,15 +16,34 @@ interface Props {
 }
 
 export default function ProfileCard({ initialProfile }: Props) {
-  const { lang, setLang } = useLanguage(); // use context
+  const router = useRouter();
+  const { lang, setLang } = useLanguage();
   const [profile, setProfile] = useState<Profile>(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === "language") setLang(value as "bn" | "en"); // update context
+    if (name === "language") setLang(value as "bn" | "en");
     setProfile((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogout = async () => {
+    const toastId = toast.loading(lang === "bn" ? "লগআউট হচ্ছে..." : "Logging out...");
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Logout failed");
+
+      localStorage.removeItem("user");
+      localStorage.removeItem("farmerProfile");
+
+      toast.success(lang === "bn" ? "সফলভাবে লগআউট হয়েছে" : "Logged out successfully", { id: toastId });
+
+      router.push("/login");
+    } catch (err: any) {
+      toast.error(err.message || (lang === "bn" ? "লগআউট ব্যর্থ" : "Failed to logout"), { id: toastId });
+    }
   };
 
   const handleSave = async () => {
@@ -123,12 +143,20 @@ export default function ProfileCard({ initialProfile }: Props) {
             </button>
           </>
         ) : (
+        <>
           <button
             onClick={() => setIsEditing(true)}
             className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition"
           >
             {lang === "bn" ? "সম্পাদনা করুন" : "Edit"}
           </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg transition"
+          >
+            {lang === "bn" ? "লগআউট" : "Logout"}
+          </button>
+        </>
         )}
       </div>
     </div>
