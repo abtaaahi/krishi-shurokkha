@@ -17,7 +17,7 @@ export default function HeroSection() {
         "বাংলাদেশে প্রতি বছর উৎপাদিত ফসলের ৩০% নষ্ট হয়। কৃষি সুরক্ষা আপনাকে আগেভাগে সতর্ক করে, ক্ষতি কমাতে সাহায্য করে।",
       cta: "এখনই শুরু করুন",
       micro: "শুধু ৩ ধাপে ফসল বাঁচান",
-      stat: "বাংলাদেশে প্রতি দিন প্রায় ১,২০০ টন ফসল নষ্ট হয়",
+      stat: "বাংলাদেশে প্রতিদিন প্রায় ১,২০০ টন ফসল নষ্ট হয়",
       bnBtn: "বাংলা",
       enBtn: "English",
     },
@@ -36,7 +36,7 @@ export default function HeroSection() {
   const t = content[lang];
 
   return (
-    <section className="relative bg-gradient-to-b from-green-200 to-green-50 px-6 py-20 md:py-32 flex flex-col items-center text-center overflow-hidden">
+    <section className="relative bg-gradient-to-b from-green-200 to-green-50 px-6 py-10 md:py-12 flex flex-col items-center text-center overflow-hidden">
 
       {/* Lottie Plant Animation */}
       <div className="w-full flex justify-center mb-6 relative z-10">
@@ -53,7 +53,7 @@ export default function HeroSection() {
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="bg-white px-4 py-2 rounded-xl shadow-lg mb-4 inline-block text-green-900 font-semibold"
+        className="bg-white px-4 py-2 rounded-2xl shadow-lg mb-4 inline-block text-green-900 font-semibold"
       >
         {t.stat}
       </motion.div>
@@ -81,14 +81,14 @@ export default function HeroSection() {
       </motion.p>
 
       {/* Microcopy */}
-      <motion.p
+      {/* <motion.p
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.7 }}
         className="text-green-900 font-medium text-sm md:text-base mb-6"
       >
         {t.micro}
-      </motion.p>
+      </motion.p> */}
 
       {/* CTA Button */}
       <motion.div
@@ -103,26 +103,6 @@ export default function HeroSection() {
           {t.cta}
         </button>
       </motion.div>
-
-      {/* Language Toggle */}
-      <div className="absolute top-6 right-6 flex items-center bg-white rounded-full shadow-md px-3 py-1 z-20">
-        <span
-          onClick={() => setLang("bn")}
-          className={`cursor-pointer px-2 py-1 rounded-full transition ${
-            lang === "bn" ? "bg-green-700 text-white" : "text-gray-700"
-          }`}
-        >
-          বাংলা
-        </span>
-        <span
-          onClick={() => setLang("en")}
-          className={`cursor-pointer px-2 py-1 rounded-full transition ${
-            lang === "en" ? "bg-green-700 text-white" : "text-gray-700"
-          }`}
-        >
-          EN
-        </span>
-      </div>
     </section>
   );
 }
