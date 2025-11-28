@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import LocationSelector, { Upazila } from "../components/LocationSelector";
 import useWeather from "../hooks/useWeather";
 import WeatherForecast from "../components/WeatherForecast";
@@ -9,10 +10,18 @@ import Advisory from "../components/Advisory";
 import { FiArrowUp } from "react-icons/fi";
 
 export default function WeatherPage() {
+  const router = useRouter();
   const [selectedUpazila, setSelectedUpazila] = useState<Upazila>();
   const { data, current, forecast, loading, error } = useWeather(selectedUpazila);
 
   const [showTopBtn, setShowTopBtn] = useState(false);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      router.push("/login");
+    }
+  }, [router]);
 
   useEffect(() => {
     const handleScroll = () => {

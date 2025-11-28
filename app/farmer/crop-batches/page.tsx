@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const divisions = [
   "ঢাকা", "চট্টগ্রাম", "খুলনা", "বরিশাল", "সিলেট", "রাজশাহী", "রংপুর", "ময়মনসিংহ"
@@ -24,6 +25,8 @@ const storageTypes = [
 ];
 
 export default function CropBatchForm() {
+  const router = useRouter();
+
   const [cropType, setCropType] = useState("Paddy");
   const [weight, setWeight] = useState("");
   const [harvestDate, setHarvestDate] = useState("");
@@ -33,6 +36,14 @@ export default function CropBatchForm() {
   const [msg, setMsg] = useState("");
   const [msgType, setMsgType] = useState<"success" | "error">("error");
   const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      // Check if user is logged in
+      const user = localStorage.getItem("user");
+      if (!user) {
+        router.push("/login");
+      }
+    }, [router]);
 
   function handleDivisionChange(e: any) {
     const div = e.target.value;

@@ -29,7 +29,7 @@ export async function GET(req: Request) {
     // Fetch interventions
     const { data: interventions } = await supabase
       .from("interventions")
-      .select("batch_id, success_score")
+      .select("*")
       .eq("farmer_id", user.id);
 
     // Compute success rate per batch
