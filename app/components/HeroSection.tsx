@@ -1,39 +1,127 @@
 "use client";
 
-
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { useLanguage } from "@/app/context/LanguageContext";
+import Lottie from "react-lottie-player";
+import plantAnimation from "../../public/animations/plant.json";
 
 export default function HeroSection() {
+  const { lang, setLang } = useLanguage();
+  const router = useRouter();
+
+  const content = {
+    bn: {
+      title: "নষ্ট হওয়ার আগেই ফসল বাঁচান",
+      subtitle:
+        "বাংলাদেশে প্রতি বছর উৎপাদিত ফসলের ৩০% নষ্ট হয়। কৃষি সুরক্ষা আপনাকে আগেভাগে সতর্ক করে, ক্ষতি কমাতে সাহায্য করে।",
+      cta: "এখনই শুরু করুন",
+      micro: "শুধু ৩ ধাপে ফসল বাঁচান",
+      stat: "বাংলাদেশে প্রতি দিন প্রায় ১,২০০ টন ফসল নষ্ট হয়",
+      bnBtn: "বাংলা",
+      enBtn: "English",
+    },
+    en: {
+      title: "Protect Your Crops Before They Get Damaged",
+      subtitle:
+        "Every year, 30% of Bangladesh's crops are lost. Krishi Shurokkha alerts you early to reduce losses and save income.",
+      cta: "Get Started",
+      micro: "Save your crops in just 3 steps",
+      stat: "In Bangladesh, about 1,200 tons of crops are lost daily",
+      bnBtn: "Bangla",
+      enBtn: "English",
+    },
+  };
+
+  const t = content[lang];
+
   return (
-    <section className="bg-gradient-to-b from-green-100 to-green-50 flex flex-col items-center justify-center text-center px-6 py-20 md:py-32">
-      
-      {/* Illustration */}
-      <div className="w-44 h-44 mb-8 relative">
-        <img
-          src="https://file-rajshahi.portal.gov.bd/uploads/04c091f2-47bc-48c5-8954-7c555ecff297//668/516/6af/6685166af3e9e647218543.jpg"
-          alt="কৃষক ইলাস্ট্রেশন"
-          
-          className="object-contain"
+    <section className="relative bg-gradient-to-b from-green-200 to-green-50 px-6 py-20 md:py-32 flex flex-col items-center text-center overflow-hidden">
+
+      {/* Lottie Plant Animation */}
+      <div className="w-full flex justify-center mb-6 relative z-10">
+        <Lottie
+          loop
+          animationData={plantAnimation}
+          play
+          style={{ width: "250px", height: "250px" }}
         />
       </div>
 
-      {/* Main Title */}
-      <h1 className="text-3xl md:text-5xl font-extrabold text-green-900 leading-tight">
-        কৃষি সুরক্ষা
-      </h1>
+      {/* Highlight Stat */}
+      <motion.div
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="bg-white px-4 py-2 rounded-xl shadow-lg mb-4 inline-block text-green-900 font-semibold"
+      >
+        {t.stat}
+      </motion.div>
+
+      {/* Title */}
+      <motion.h1
+        key={t.title}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="text-3xl md:text-5xl font-extrabold text-green-900 leading-tight mb-4"
+      >
+        {t.title}
+      </motion.h1>
 
       {/* Subtitle */}
-      <p className="mt-4 md:mt-6 text-gray-800 text-base md:text-lg max-w-2xl">
-        বাংলাদেশে কৃষকদের ফসল নষ্ট কমাতে স্মার্ট সমাধান। আগেভাগেই সতর্ক করে সঞ্চয় নিশ্চিত করুন।
-      </p>
+      <motion.p
+        key={t.subtitle}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.7 }}
+        className="text-gray-800 text-base md:text-lg max-w-xl mb-4"
+      >
+        {t.subtitle}
+      </motion.p>
 
-      {/* CTA Buttons */}
-      <div className="mt-8 flex flex-col md:flex-row gap-4">
-        <button className="bg-green-600 text-white px-8 py-3 rounded-xl shadow-lg hover:bg-green-700 transition duration-300 font-medium">
-          এখন শুরু করুন
+      {/* Microcopy */}
+      <motion.p
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.7 }}
+        className="text-green-900 font-medium text-sm md:text-base mb-6"
+      >
+        {t.micro}
+      </motion.p>
+
+      {/* CTA Button */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.7 }}
+      >
+        <button
+          onClick={() => router.push("/register")}
+          className="bg-green-700 text-white px-10 py-3 rounded-xl shadow-md hover:bg-green-800 transition text-lg font-medium"
+        >
+          {t.cta}
         </button>
-        <button className="bg-white border border-green-600 text-green-700 px-8 py-3 rounded-xl shadow hover:bg-green-50 transition duration-300 font-medium">
-          আরও জানুন
-        </button>
+      </motion.div>
+
+      {/* Language Toggle */}
+      <div className="absolute top-6 right-6 flex items-center bg-white rounded-full shadow-md px-3 py-1 z-20">
+        <span
+          onClick={() => setLang("bn")}
+          className={`cursor-pointer px-2 py-1 rounded-full transition ${
+            lang === "bn" ? "bg-green-700 text-white" : "text-gray-700"
+          }`}
+        >
+          বাংলা
+        </span>
+        <span
+          onClick={() => setLang("en")}
+          className={`cursor-pointer px-2 py-1 rounded-full transition ${
+            lang === "en" ? "bg-green-700 text-white" : "text-gray-700"
+          }`}
+        >
+          EN
+        </span>
       </div>
     </section>
   );

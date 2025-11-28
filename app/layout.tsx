@@ -1,16 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { LanguageProvider } from "./context/LanguageContext";
 
 export const metadata: Metadata = {
   title: "কৃষি সুরক্ষা",
@@ -27,10 +17,10 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Krishi Shurokkha" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
+        <LanguageProvider>
         {children}
+        </LanguageProvider>
       </body>
     </html>
   );
