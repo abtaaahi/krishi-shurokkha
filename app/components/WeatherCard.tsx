@@ -22,6 +22,7 @@ export default function WeatherCard({ day }: Props) {
   const rain = Math.round(day.rain);
 
   return (
+    
     <div className="bg-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 duration-300">
       <div className="text-lg font-bold mb-2 text-blue-700">{date}</div>
 
