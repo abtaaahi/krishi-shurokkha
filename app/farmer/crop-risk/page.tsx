@@ -23,6 +23,7 @@ interface RiskBatch {
   forecast: Forecast[];
   summaryBn: string;
   summaryEn: string;
+  riskCategory: string;
 }
 
 export default function CropRiskPage() {
@@ -144,9 +145,9 @@ export default function CropRiskPage() {
           <p className="text-gray-700">
             {lang === "bn" ? "জেলা" : "District"}: {lang === "bn" ? (batch.district_name_bn || batch.storage_district) : (batch.district_name_en || batch.storage_district)}
           </p>
-<div className={`p-3 rounded shadow-md font-semibold ${getRiskClasses(batch.riskCategory)}`}>
-  <p>{lang === "bn" ? batch.summaryBn : batch.summaryEn}</p>
-</div>
+          <div className={`p-3 rounded shadow-md font-semibold ${getRiskClasses(batch.riskCategory)}`}>
+            <p>{lang === "bn" ? batch.summaryBn : batch.summaryEn}</p>
+          </div>
 
 
           {batch.forecast && batch.forecast.length > 0 && (
