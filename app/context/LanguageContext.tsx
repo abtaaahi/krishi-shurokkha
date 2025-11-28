@@ -2,22 +2,33 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 
-const LanguageContext = createContext({
+type Lang = "bn" | "en";
+
+const LanguageContext = createContext<{
+  lang: Lang;
+  setLang: (lang: Lang) => void;
+}>({
   lang: "bn",
-  setLang: (lang: string) => {},
+  setLang: () => {},
 });
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [lang, setLang] = useState("bn");
-
-  useEffect(() => {
+  // Read from localStorage first for initial state (avoid setState in useEffect)
+  const getInitialLang = (): Lang => {
+    if (typeof window === "undefined") return "bn"; // SSR fallback
     const saved = localStorage.getItem("global_lang");
-    if (saved) setLang(saved);
-  }, []);
+    return saved === "bn" || saved === "en" ? saved : "bn";
+  };
 
-  const switchLang = (l: string) => {
+  const [lang, setLang] = useState<Lang>(getInitialLang);
+
+  // Sync to localStorage whenever lang changes
+  useEffect(() => {
+    localStorage.setItem("global_lang", lang);
+  }, [lang]);
+
+  const switchLang = (l: Lang) => {
     setLang(l);
-    localStorage.setItem("global_lang", l);
   };
 
   return (
