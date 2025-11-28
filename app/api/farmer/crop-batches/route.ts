@@ -64,3 +64,35 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ message: "ফসলের ব্যাচ সফলভাবে রেজিস্টার হয়েছে!" });
 }
+
+
+export async function GET(req: Request) {
+  const supabase = await createServer();
+
+  // Get authenticated user securely
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !userData?.user) {
+    return NextResponse.json(
+      { error: "আপনি লগইন করেননি। অনুগ্রহ করে আগে লগইন করুন।" },
+      { status: 401 }
+    );
+  }
+
+  const user = userData.user;
+
+  // Fetch crop batches for this farmer
+  const { data: batches, error } = await supabase
+    .from("crop_batches")
+    .select("*")
+    .eq("farmer_id", user.id);
+
+  if (error) {
+    return NextResponse.json(
+      { error: "ফসলের ব্যাচ লোড করতে ব্যর্থ হয়েছে।" },
+      { status: 400 }
+    );
+  }
+
+  return NextResponse.json({ batches });
+}

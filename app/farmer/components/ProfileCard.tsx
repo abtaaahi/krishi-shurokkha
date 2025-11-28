@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import localforage from "localforage";
 import toast, { Toaster } from "react-hot-toast";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Profile {
   name: string;
@@ -15,44 +15,26 @@ interface Props {
 }
 
 export default function ProfileCard({ initialProfile }: Props) {
+  const { lang, setLang } = useLanguage(); // use context
   const [profile, setProfile] = useState<Profile>(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
-  const [language, setLanguage] = useState<string>(initialProfile.preferred_language);
-  const [loadingLang, setLoadingLang] = useState(true);
-
-  // ভাষা লোড করা
-  useEffect(() => {
-    async function loadLanguage() {
-      const storedLang = await localforage.getItem<string>("preferredLanguage");
-      if (storedLang) setLanguage(storedLang);
-      setLoadingLang(false);
-    }
-    loadLanguage();
-  }, []);
-
-  // ভাষা সংরক্ষণ করা
-  useEffect(() => {
-    if (!loadingLang) {
-      localforage.setItem("preferredLanguage", language).catch((err) =>
-        console.error("ভাষা সংরক্ষণ করতে সমস্যা:", err)
-      );
-    }
-  }, [language, loadingLang]);
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (name === "language") setLang(value as "bn" | "en"); // update context
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
-    const toastId = toast.loading("আপডেট হচ্ছে...");
+    setSaving(true);
+    const toastId = toast.loading(lang === "bn" ? "আপডেট হচ্ছে..." : "Updating...");
     try {
       const res = await fetch("/api/farmer/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...profile, language }),
+        body: JSON.stringify({ ...profile, preferred_language: lang }),
       });
-
       const data = await res.json();
       if (res.ok) {
         toast.success(data.message, { id: toastId });
@@ -60,79 +42,84 @@ export default function ProfileCard({ initialProfile }: Props) {
       } else {
         toast.error(data.error, { id: toastId });
       }
-    } catch (err) {
-      toast.error("সার্ভারে সমস্যা হয়েছে", { id: toastId });
+    } catch {
+      toast.error(lang === "bn" ? "সার্ভারে সমস্যা হয়েছে" : "Server error", { id: toastId });
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loadingLang) return null;
-
   return (
-    <div className="p-6 bg-white shadow-lg rounded-xl max-w-md mx-auto border border-gray-200">
+    <div className="max-w-md mx-auto p-6 bg-white shadow-xl rounded-2xl border border-gray-200 transition-all hover:shadow-2xl">
       <Toaster />
+      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+        {lang === "bn" ? "ব্যক্তিগত তথ্য" : "Profile Information"}
+      </h2>
 
-      {/* নাম */}
+      {/* Name */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">নাম</label>
+        <label className="block text-sm font-medium text-gray-600 mb-1">{lang === "bn" ? "নাম" : "Name"}</label>
         <input
           type="text"
           name="name"
           value={profile.name}
-          disabled={!isEditing}
+          disabled={!isEditing || saving}
           onChange={handleChange}
-          className={`w-full px-4 py-2 rounded-md border ${
-            isEditing ? "border-blue-400 bg-white" : "border-gray-300 bg-gray-100"
-          } focus:outline-none focus:ring-2 focus:ring-blue-300`}
+          className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 ${
+            isEditing ? "border-blue-400 bg-white focus:ring-blue-300" : "border-gray-300 bg-gray-100"
+          }`}
         />
       </div>
 
-      {/* ফোন */}
+      {/* Phone */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">ফোন</label>
+        <label className="block text-sm font-medium text-gray-600 mb-1">{lang === "bn" ? "ফোন" : "Phone"}</label>
         <input
           type="text"
           name="phone"
           value={profile.phone}
-          disabled={!isEditing}
+          disabled={!isEditing || saving}
           onChange={handleChange}
-          className={`w-full px-4 py-2 rounded-md border ${
-            isEditing ? "border-blue-400 bg-white" : "border-gray-300 bg-gray-100"
-          } focus:outline-none focus:ring-2 focus:ring-blue-300`}
+          className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 ${
+            isEditing ? "border-blue-400 bg-white focus:ring-blue-300" : "border-gray-300 bg-gray-100"
+          }`}
         />
       </div>
 
-      {/* পছন্দের ভাষা */}
+      {/* Language */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">ভাষা</label>
+        <label className="block text-sm font-medium text-gray-600 mb-1">{lang === "bn" ? "ভাষা" : "Language"}</label>
         <select
           name="language"
-          value={language}
-          disabled={!isEditing}
-          onChange={(e) => setLanguage(e.target.value)}
-          className={`w-full px-4 py-2 rounded-md border ${
-            isEditing ? "border-blue-400 bg-white" : "border-gray-300 bg-gray-100"
-          } focus:outline-none focus:ring-2 focus:ring-blue-300`}
+          value={lang}
+          disabled={!isEditing || saving}
+          onChange={handleChange}
+          className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 ${
+            isEditing ? "border-blue-400 bg-white focus:ring-blue-300" : "border-gray-300 bg-gray-100"
+          }`}
         >
           <option value="en">English</option>
           <option value="bn">বাংলা</option>
         </select>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-3 mt-5">
+      {/* Actions */}
+      <div className="flex justify-end gap-3 mt-6">
         {isEditing ? (
           <>
             <button
               onClick={handleSave}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition"
+              disabled={saving}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition flex items-center justify-center gap-2"
             >
-              সংরক্ষণ করুন
+              {saving ? (lang === "bn" ? "সংরক্ষণ হচ্ছে..." : "Saving...") : lang === "bn" ? "সংরক্ষণ করুন" : "Save"}
             </button>
             <button
               onClick={() => setIsEditing(false)}
+              disabled={saving}
               className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg transition"
             >
-              বাতিল
+              {lang === "bn" ? "বাতিল" : "Cancel"}
             </button>
           </>
         ) : (
@@ -140,7 +127,7 @@ export default function ProfileCard({ initialProfile }: Props) {
             onClick={() => setIsEditing(true)}
             className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition"
           >
-            সম্পাদনা করুন
+            {lang === "bn" ? "সম্পাদনা করুন" : "Edit"}
           </button>
         )}
       </div>
