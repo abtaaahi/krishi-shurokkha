@@ -13,7 +13,7 @@ interface Props {
 export default function WeatherCard({ day }: Props) {
   const date = new Date(day.date * 1000).toLocaleDateString("bn-BD", {
     day: "numeric",
-    month: "numeric",
+    month: "long",
     year: "numeric",
   });
 
