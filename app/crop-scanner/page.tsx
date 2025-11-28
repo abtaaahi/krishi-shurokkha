@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ImageUploader from "../components/ImageUploader";
 import ScanHistory from "../components/ScanHistory";
 import { toBanglaNumber } from "../utils/banglaFormatter";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface HistoryItem {
   preview: string;
@@ -13,26 +15,56 @@ interface HistoryItem {
 }
 
 export default function CropScannerPage() {
+  const router = useRouter();
+  const { lang } = useLanguage();
+
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
   const [loading, setLoading] = useState(false);
-
-  // result should stay empty until scan happens
   const [result, setResult] = useState<string>("");
   const [confidence, setConfidence] = useState<string>("");
-
   const [history, setHistory] = useState<HistoryItem[]>([]);
+
+  const t = {
+    en: {
+      pageTitle: "Crop Health Scan",
+      noImage: "No image selected.",
+      scanButton: "Scan",
+      scanning: "Scanning...",
+      scanFailed: "Scan failed.",
+      resultLabel: "Result:",
+      fresh: "Fresh",
+      rotten: "Rotten",
+      confidenceLabel: "Confidence:",
+    },
+    bn: {
+      pageTitle: "ফসলের স্বাস্থ্য পরীক্ষা",
+      noImage: "কোনো ছবি নির্বাচন করা হয়নি।",
+      scanButton: "স্ক্যান করুন",
+      scanning: "স্ক্যান হচ্ছে...",
+      scanFailed: "স্ক্যান করা সম্ভব হয়নি।",
+      resultLabel: "ফলাফল:",
+      fresh: "তাজা",
+      rotten: "পচা",
+      confidenceLabel: "নিশ্চয়তার হার:",
+    },
+  }[lang];
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      router.push("/login");
+    }
+  }, [router]);
 
   useEffect(() => {
     const stored = localStorage.getItem("crop_history");
-    if (stored) {
-      setHistory(JSON.parse(stored));
-    }
+    if (stored) setHistory(JSON.parse(stored));
   }, []);
 
   async function handleScan() {
     if (!image) {
-      setResult("কোনো ছবি নির্বাচন করা হয়নি।");
+      setResult(t.noImage);
       setConfidence("");
       return;
     }
@@ -43,11 +75,7 @@ export default function CropScannerPage() {
       const formData = new FormData();
       formData.append("file", image);
 
-      const res = await fetch("/api/crop/scan", {
-        method: "POST",
-        body: formData,
-      });
-
+      const res = await fetch("/api/crop/scan", { method: "POST", body: formData });
       const data = await res.json();
 
       if (data.error) {
@@ -68,7 +96,6 @@ export default function CropScannerPage() {
             confidence: Number(conf),
             time: new Date().toISOString(),
           };
-
           const updated = [newEntry, ...history].slice(0, 10);
           setHistory(updated);
           localStorage.setItem("crop_history", JSON.stringify(updated));
@@ -76,7 +103,7 @@ export default function CropScannerPage() {
         reader.readAsDataURL(image);
       }
     } catch {
-      setResult("স্ক্যান করা সম্ভব হয়নি।");
+      setResult(t.scanFailed);
       setConfidence("");
     }
 
@@ -84,18 +111,10 @@ export default function CropScannerPage() {
   }
 
   return (
-    <div
-      className="min-h-screen p-4 sm:p-6"
-      style={{
-        background: "linear-gradient(to bottom, #e3f8ff, #e6ffe6)",
-      }}
-    >
-      <h1 className="text-3xl font-bold text-green-800 text-center mb-6 drop-shadow">
-        ফসলের স্বাস্থ্য পরীক্ষা
-      </h1>
+    <div className="min-h-screen p-4 sm:p-6" style={{ background: "linear-gradient(to bottom, #e3f8ff, #e6ffe6)" }}>
+      <h1 className="text-3xl font-bold text-green-800 text-center mb-6 drop-shadow">{t.pageTitle}</h1>
 
       <div className="bg-white/90 backdrop-blur-sm shadow-xl rounded-xl p-6 max-w-md mx-auto border border-green-100">
-        
         <ImageUploader
           setImage={(img) => {
             setImage(img);
@@ -107,11 +126,7 @@ export default function CropScannerPage() {
 
         {preview && (
           <div className="mt-4 flex justify-center">
-            <img
-              src={preview}
-              alt="Uploaded"
-              className="w-64 h-64 object-cover rounded-lg shadow-md"
-            />
+            <img src={preview} alt="Uploaded" className="w-64 h-64 object-cover rounded-lg shadow-md" />
           </div>
         )}
 
@@ -120,28 +135,26 @@ export default function CropScannerPage() {
           disabled={loading}
           className="mt-4 w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition disabled:opacity-50"
         >
-          {loading ? "স্ক্যান হচ্ছে..." : "স্ক্যান করুন"}
+          {loading ? t.scanning : t.scanButton}
         </button>
 
         {result && (
           <div className="mt-4 text-center text-lg">
             <p className="font-medium">
-              ফলাফল:{" "}
+              {t.resultLabel}{" "}
               <span
                 className={
-                  result.toLowerCase() === "fresh"
+                  result === t.fresh
                     ? "text-green-700"
                     : "text-red-600"
                 }
               >
-                {result.toLowerCase() === "fresh" ? "তাজা" : result.toLowerCase() === "rotten" ? "পচা" : result}
+                {result}
               </span>
             </p>
-
             {confidence && (
               <p className="font-medium">
-                নিশ্চয়তার হার:{" "}
-                <span className="text-green-700">{confidence}</span>
+                {t.confidenceLabel} <span className="text-green-700">{confidence}</span>
               </p>
             )}
           </div>
