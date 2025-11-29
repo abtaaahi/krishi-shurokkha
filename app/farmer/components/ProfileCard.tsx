@@ -53,8 +53,13 @@ export default function ProfileCard({ initialProfile }: Props) {
       const res = await fetch("/api/farmer/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...profile, preferred_language: lang }),
+        body: JSON.stringify({ 
+          name: profile.name, 
+          phone: profile.phone, 
+          language: lang 
+        }),
       });
+
       const data = await res.json();
       if (res.ok) {
         toast.success(data.message, { id: toastId });
