@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 type Props = {
-  setImage: (f: File | null) => void;
-  setPreview: (p: string) => void;
+  onFileSelect: (file: File | null, previewUrl: string) => void;
 };
 
-const MAX_SIZE_BYTES = 200 * 1024 * 1024;
+const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/bmp"];
 
-export default function ImageUploader({ setImage, setPreview }: Props) {
+export default function ImageUploader({ onFileSelect }: Props) {
+  const { lang } = useLanguage();
   const [error, setError] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -19,33 +20,36 @@ export default function ImageUploader({ setImage, setPreview }: Props) {
     setError("");
 
     if (!file) {
-      setImage(null);
-      setPreview("");
+      onFileSelect(null, "");
       return;
     }
 
     if (file.size > MAX_SIZE_BYTES) {
-      setError("চিত্রটির আকার ২০০MB এর চেয়ে বেশি।");
-      setImage(null);
+      setError(
+        lang === "bn"
+          ? "চিত্রটির আকার ১০MB এর চেয়ে বেশি।"
+          : "File size exceeds 10MB."
+      );
+      onFileSelect(null, "");
       return;
     }
 
     if (!ALLOWED_TYPES.includes(file.type)) {
-      setError("শুধুমাত্র JPG, JPEG, PNG, WEBP, BMP অনুমোদিত।");
-      setImage(null);
+      setError(
+        lang === "bn"
+          ? "শুধুমাত্র JPG, JPEG, PNG, WEBP, BMP অনুমোদিত।"
+          : "Only JPG, JPEG, PNG, WEBP, BMP are allowed."
+      );
+      onFileSelect(null, "");
       return;
     }
 
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
+    const previewUrl = URL.createObjectURL(file);
+    onFileSelect(file, previewUrl);
   }
 
   return (
-    <div className="mb-4">
-      <label className="block mb-2 text-sm font-medium text-gray-700">
-        ছবি আপলোড করুন (JPG/PNG; সর্বোচ্চ ১০MB)
-      </label>
-     
+    <div className="mb-4 w-full max-w-md">
       <div
         className={`border-2 rounded-xl border-dashed p-6 text-center cursor-pointer bg-white shadow-sm transition ${
           dragActive ? "border-green-500 bg-green-50" : "border-gray-300"
@@ -63,9 +67,16 @@ export default function ImageUploader({ setImage, setPreview }: Props) {
         }}
       >
         <p className={`text-gray-700 ${error ? "text-red-600" : ""}`}>
-          {error || "ফাইল টেনে আনুন বা এখানে ক্লিক করুন"}
+          {error ||
+            (lang === "bn"
+              ? "ফাইল টেনে আনুন বা এখানে ক্লিক করুন"
+              : "Drag & drop a file or click here")}
         </p>
-        <p className="text-sm text-gray-400">JPG, JPEG, PNG, WEBP, BMP</p>
+        <p className="text-sm text-gray-400">
+          {lang === "bn"
+            ? "JPEG / PNG (সর্বোচ্চ ১০MB)"
+            : "JPEG / PNG (Max 10MB)"}
+        </p>
 
         <input
           type="file"
