@@ -149,7 +149,7 @@ export default function FarmerDashboard({ profile, batches }: any) {
     {
       title: t.cropScanSection.title,
       desc: t.cropScanSection.desc,
-      route: "/farmer/scan",
+      route: "/crop-scanner",
       icon: "/icons/sprout.png",
       color: "from-white-200 to-orange-100",
     },
@@ -177,7 +177,7 @@ export default function FarmerDashboard({ profile, batches }: any) {
     {
       title: t.pestScanSection.title,
       desc: t.pestScanSection.desc,
-      route: "/farmer/pest-scan",
+      route: "/pest",
       icon: "/icons/insect.png",
       color: "from-pruple-100 to-blue-200",
     },
@@ -191,7 +191,7 @@ export default function FarmerDashboard({ profile, batches }: any) {
     {
       title: t.alertSystemSection.title,
       desc: t.alertSystemSection.desc,
-      route: "/alerts",
+      route: "/alert-system",
       icon: "/icons/alert.png",
       color: "from-black-200 to-teal-100",
     },
