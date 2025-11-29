@@ -153,8 +153,10 @@ export default function LocalRiskMap() {
     );
   };
 
+  type DistrictKey = keyof typeof DISTRICT_COORDS;
+
   const handleDistrictSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const district = e.target.value.toLowerCase();
+    const district = e.target.value.toLowerCase() as DistrictKey;
     if (DISTRICT_COORDS[district]) {
       setCenter(DISTRICT_COORDS[district]);
       setNeedDistrict(false);
