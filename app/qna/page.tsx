@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowUp } from "react-icons/fi";
 import { useLanguage } from "../context/LanguageContext";
+import ReactMarkdown from "react-markdown";
 
 export default function QnAPage() {
   const router = useRouter();
@@ -165,9 +166,9 @@ export default function QnAPage() {
       {replyText && (
         <div className="w-full max-w-xl bg-white p-6 rounded-xl shadow-lg border-2 border-green-200">
           <div className="prose prose-sm sm:prose lg:prose-lg text-gray-800">
-            {replyText.split("\n").map((line, i) => (
-              <p key={i}>{line}</p>
-            ))}
+            <ReactMarkdown>
+              {replyText}
+            </ReactMarkdown>
           </div>
         </div>
       )}
