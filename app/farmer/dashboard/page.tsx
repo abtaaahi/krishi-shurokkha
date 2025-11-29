@@ -28,6 +28,10 @@ const translations = {
       title: "Crop Health Check",
       desc: "Upload crop images to detect diseases, pests, or spoilage risks using AI.",
     },
+    pestScanSection: {
+      title: "Pest Scan",
+      desc: "Scan leaf or crop images to detect harmful pests instantly.",
+    },
     cropBatchesSection: {
       title: "Crop Batches",
       desc: "Register new crop batches, weight, harvest date, and storage location.",
@@ -36,6 +40,19 @@ const translations = {
       title: "Crop Risk Forecast",
       desc: "View risk forecasts based on temperature, humidity, and rainfall with daily alerts.",
     },
+    localRiskMapSection: {
+      title: "Local Risk Map",
+      desc: "View real-time local risk zones based on weather and crop conditions.",
+    },
+    qnaSection: {
+      title: "QnA",
+      desc: "Ask questions and get answers from the AI assistant.",
+    },
+    alertSystemSection: {
+      title: "Alert System",
+      desc: "Receive smart alerts for weather, storage, and crop-specific risks.",
+    },
+
     batchSummary: "Crop Batch Summary",
     cropType: "Crop Type",
     weight: "Weight",
@@ -57,6 +74,10 @@ const translations = {
       title: "ফসলের স্বাস্থ্য পরীক্ষা",
       desc: "ফসলের ছবি আপলোড করুন। এআই বিশ্লেষণ দ্বারা ফসলের রোগ, পোকামাকড় বা নষ্ট হওয়ার ঝুঁকি শনাক্ত করুন। দ্রুত পদক্ষেপ নিন।",
     },
+    pestScanSection: {
+      title: "কীটপতঙ্গ স্ক্যান",
+      desc: "পাতা বা ফসলের ছবি স্ক্যান করে ক্ষতিকারক পোকার উপস্থিতি শনাক্ত করুন।",
+    },
     cropBatchesSection: {
       title: "ফসলের ব্যাচ",
       desc: "নতুন ফসলের ব্যাচ রেজিস্টার করুন, ওজন, হাভেস্ট তারিখ এবং স্টোরেজ অবস্থান উল্লেখ করুন। আপনার ফসলের ব্যবস্থাপনা সহজ করুন।",
@@ -64,6 +85,18 @@ const translations = {
     cropRiskSection: {
       title: "ফসল ঝুঁকি পূর্বাভাস",
       desc: "আপনার ফসলের ঝুঁকি পূর্বাভাস দেখুন। তাপমাত্রা, আর্দ্রতা এবং বৃষ্টিপাত অনুযায়ী সতর্কতা এবং দৈনিক পরামর্শ পান।",
+    },
+    localRiskMapSection: {
+      title: "স্থানীয় ঝুঁকি মানচিত্র",
+      desc: "ফসল ও আবহাওয়া ভিত্তিক এলাকাভিত্তিক ঝুঁকি অঞ্চল দেখুন।",
+    },
+    qnaSection: {
+      title: "প্রশ্নোত্তর",
+      desc: "প্রশ্ন করুন এবং এআই কৃষি সহকারী থেকে উত্তর পান।",
+    },
+    alertSystemSection: {
+      title: "সতর্কতা সিস্টেম",
+      desc: "ফসল, আবহাওয়া ও অন্যান্য ঝুঁকির ভিত্তিতে স্মার্ট সতর্কতা পান।",
     },
     batchSummary: "ফসলের ব্যাচ সারসংক্ষেপ",
     cropType: "ফসলের ধরণ",
@@ -99,41 +132,69 @@ export default function FarmerDashboard({ profile, batches }: any) {
   if (loading) return <p className="text-center mt-10 text-lg">{t.loading}</p>;
 
   const sections: Section[] = [
-    { 
-      title: t.profileSection.title, 
-      desc: t.profileSection.desc, 
-      route: "/farmer/profile", 
-      icon: "/icons/farmer.png", 
-      color: "from-green-200 to-green-100" 
+    {
+      title: t.profileSection.title,
+      desc: t.profileSection.desc,
+      route: "/farmer/profile",
+      icon: "/icons/farmer.png",
+      color: "from-green-200 to-red-100",
     },
-    { 
-      title: t.weatherSection.title, 
-      desc: t.weatherSection.desc, 
-      route: "/weather", 
-      icon: "/icons/rain.png", 
-      color: "from-blue-200 to-blue-100" 
+    {
+      title: t.weatherSection.title,
+      desc: t.weatherSection.desc,
+      route: "/weather",
+      icon: "/icons/rain.png",
+      color: "from-purple-200 to-white-100",
     },
-    { 
-      title: t.cropScanSection.title, 
-      desc: t.cropScanSection.desc, 
-      route: "/farmer/scan", 
-      icon: "/icons/sprout.png", 
-      color: "from-orange-200 to-orange-100" 
+    {
+      title: t.cropScanSection.title,
+      desc: t.cropScanSection.desc,
+      route: "/farmer/scan",
+      icon: "/icons/sprout.png",
+      color: "from-white-200 to-orange-100",
     },
-    { 
-      title: t.cropBatchesSection.title, 
-      desc: t.cropBatchesSection.desc, 
-      route: "/farmer/crop-batches", 
-      icon: "/icons/wheat.png", 
-      color: "from-yellow-200 to-yellow-100" 
+    {
+      title: t.cropBatchesSection.title,
+      desc: t.cropBatchesSection.desc,
+      route: "/farmer/crop-batches",
+      icon: "/icons/wheat.png",
+      color: "from-yellow-200 to-blue-100",
     },
-    { 
-      title: t.cropRiskSection.title, 
-      desc: t.cropRiskSection.desc, 
-      route: "/farmer/crop-risk", 
-      icon: "/icons/error.png", 
-      color: "from-red-200 to-red-100" 
-    }
+    {
+      title: t.cropRiskSection.title,
+      desc: t.cropRiskSection.desc,
+      route: "/farmer/crop-risk",
+      icon: "/icons/error.png",
+      color: "from-red-200 to-green-100",
+    },
+    {
+      title: t.localRiskMapSection.title,
+      desc: t.localRiskMapSection.desc,
+      route: "/risk-map",
+      icon: "/icons/placeholder.png",
+      color: "from-purple-200 to-lavender-100",
+    },
+    {
+      title: t.pestScanSection.title,
+      desc: t.pestScanSection.desc,
+      route: "/farmer/pest-scan",
+      icon: "/icons/insect.png",
+      color: "from-pruple-100 to-blue-200",
+    },
+    {
+      title: t.qnaSection.title,
+      desc: t.qnaSection.desc,
+      route: "/qna",
+      icon: "/icons/question.png",
+      color: "from-green-200 to-red-100",
+    },
+    {
+      title: t.alertSystemSection.title,
+      desc: t.alertSystemSection.desc,
+      route: "/alerts",
+      icon: "/icons/alert.png",
+      color: "from-black-200 to-teal-100",
+    },
   ];
 
   return (
@@ -143,7 +204,7 @@ export default function FarmerDashboard({ profile, batches }: any) {
       </h1>
 
       {/* Sections */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {sections.map((section) => (
           <div
             key={section.title}
@@ -152,47 +213,21 @@ export default function FarmerDashboard({ profile, batches }: any) {
             style={{ minHeight: "260px" }}
           >
             {section.icon && (
-              <img src={section.icon} alt={section.title} className="w-20 h-20 mb-4 object-contain" />
+              <img
+                src={section.icon}
+                alt={section.title}
+                className="w-20 h-20 mb-4 object-contain"
+              />
             )}
-            <h2 className="text-xl md:text-2xl font-semibold mb-2">{section.title}</h2>
-            <p className="text-gray-700 text-sm md:text-base break-words">{section.desc}</p>
+            <h2 className="text-xl md:text-2xl font-semibold mb-2">
+              {section.title}
+            </h2>
+            <p className="text-gray-700 text-sm md:text-base break-words">
+              {section.desc}
+            </p>
           </div>
         ))}
       </div>
-
-      {/* Batch Summary */}
-      {batches && batches.length > 0 && (
-        <section className="mt-10 w-full px-2 md:px-6">
-          <h2 className="text-2xl font-semibold mb-6 text-green-800 text-center md:text-left">
-            {t.batchSummary}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {batches.map((batch: any) => (
-              <div
-                key={batch.id}
-                className="p-5 bg-white shadow-lg rounded-xl border border-gray-200 flex flex-col gap-3 hover:shadow-2xl transition-all"
-              >
-                <div className="flex items-center gap-2">
-                  <img src="/icons/crop.png" className="w-6 h-6" alt="Crop" />
-                  <span><strong>{t.cropType}:</strong> {batch.crop_type}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <img src="/icons/weight.png" className="w-6 h-6" alt="Weight" />
-                  <span><strong>{t.weight}:</strong> {batch.estimated_weight} কেজি</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <img src="/icons/harvest.png" className="w-6 h-6" alt="Harvest" />
-                  <span><strong>{t.harvest}:</strong> {batch.harvest_date}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <img src="/icons/storage.png" className="w-6 h-6" alt="Storage" />
-                  <span><strong>{t.storage}:</strong> {batch.storage_division}, {batch.storage_district}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }
