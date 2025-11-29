@@ -15,6 +15,7 @@ const ALL_MENU_LINKS = [
   { label: { bn: "ফসল ঝুঁকি পূর্বাভাস", en: "Crop Risk Predict" }, href: "/farmer/crop-risk", auth: null },
   { label: { bn: "কৃষক অ্যাকাউন্ট তৈরি করুন", en: "Create New Account" }, href: "/register", auth: false },
   { label: { bn: "স্থানীয় ঝুঁকি মানচিত্র", en: "Local Risk Map" }, href: "/risk-map", auth: null },
+  { label: { bn: "প্রশ্নোত্তর", en: "QnA" }, href: "/qna", auth: null },
   { label: { bn: "লগইন করুন", en: "Login" }, href: "/login", auth: false },
 ];
 

@@ -2,6 +2,8 @@
 
 import LocalRiskMap from "./LocalRiskMap";
 import { useLanguage } from "../context/LanguageContext";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const RISK_COLORS = {
   Low: "#4CAF50",
@@ -10,7 +12,13 @@ const RISK_COLORS = {
 };
 
 export default function RiskMapPage() {
+  const router = useRouter();
   const { lang } = useLanguage();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) router.push("/login");
+  }, [router]);
 
   const heading = lang === "bn" ? "স্থানীয় ঝুঁকি মানচিত্র" : "Local Risk Map";
   const subheading =
