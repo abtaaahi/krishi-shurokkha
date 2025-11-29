@@ -181,300 +181,240 @@ export default function FarmerProfilePage() {
     a.click();
   };
 
-  return (
-    <div className="w-full min-h-screen bg-gray-50 px-6 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        {lang === "bn" ? "আমার প্রোফাইল" : "My Profile"}
-      </h1>
+return (
+  <div className="w-full min-h-screen bg-green-100 px-4 py-6">
+    <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-black drop-shadow">
+      {lang === "bn" ? "আমার প্রোফাইল" : "My Profile"}
+    </h1>
 
-      <div className="w-full max-w-5xl mx-auto">
-        {loading ? (
-          <p className="text-center">{lang === "bn" ? "লোড হচ্ছে..." : "Loading..."}</p>
-        ) : profileData ? (
-          <ProfileCard initialProfile={profileData} />
+    <div className="w-full max-w-5xl mx-auto">
+
+      {/* Profile */}
+      {loading ? (
+        <p className="text-center text-gray-700">{lang === "bn" ? "লোড হচ্ছে..." : "Loading..."}</p>
+      ) : profileData ? (
+        <ProfileCard initialProfile={profileData} />
+      ) : (
+        <p className="text-center text-red-500">
+          {lang === "bn" ? "প্রোফাইল তথ্য পাওয়া যায়নি।" : "Profile data not found."}
+        </p>
+      )}
+
+      {/* Active Orders Section */}
+      <section className="mt-10 bg-white p-4 rounded-xl border border-gray-300">
+        <h2 className="text-lg md:text-xl font-semibold mb-3">
+          {lang === "bn" ? "একটিভ অর্ডার আপডেট করুন" : "Update Active Orders"}
+        </h2>
+
+        {batches.filter(b => b.status === "active").length === 0 ? (
+          <p className="text-gray-600 text-center mt-3">
+            {lang === "bn" ? "কোনো একটিভ অর্ডার নেই।" : "No active orders found."}
+          </p>
         ) : (
-          <p className="text-center text-red-500">{lang === "bn" ? "প্রোফাইল তথ্য পাওয়া যায়নি।" : "Profile data not found."}</p>
-        )}
+          <ul className="space-y-5">
+            {batches.map((batch) => {
+              if (batch.status !== "active") return null;
 
-        {/* Batches */}
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold mb-2">
-            {lang === "bn"
-              ? "একটিভ অর্ডার আপডেট করুন: ইন্টারভেনশন এবং নাশ হওয়া ঘটনা যোগ করুন"
-              : "Update Active Orders: Add Interventions and Loss Events"}
-          </h2>
+              const inputState = batchInputs[batch.id] || {
+                interventionType: "",
+                interventionScore: 0,
+                interventionNotes: "",
+                lossType: "",
+                lossAmount: 0,
+                lossDescription: "",
+              };
 
-          {batches.filter(batch => batch.status === "active").length === 0 ? (
-            <p className="text-center text-gray-500 mt-4">
-              {lang === "bn"
-                ? "কোনো একটিভ অর্ডার নেই।"
-                : "No active orders found."}
-            </p>
-          ) : (
-            <ul className="space-y-6">
-              {batches.map((batch) => {
-                if (batch.status !== "active") return null;
+              return (
+                <li key={batch.id} className="p-4 rounded-xl border border-gray-300 bg-white">
+                  <div className="mb-2 text-gray-800">
+                    <strong>{batch.crop_type}</strong> — {batch.storage_district}  
+                    <br />
+                    {lang === "bn" ? "ফসলের তারিখ" : "Harvest Date"}:{" "}
+                    {batch.harvest_date}
+                  </div>
 
-                const inputState = batchInputs[batch.id] || {
-                  interventionType: "",
-                  interventionScore: 0,
-                  interventionNotes: "",
-                  lossType: "",
-                  lossAmount: 0,
-                  lossDescription: "",
-                };
-
-                return (
-                  <li key={batch.id} className="p-4 bg-white rounded-lg shadow w-full">
-                    <div className="mb-3">
-                      <strong>{batch.crop_type}</strong> - {batch.storage_district} -{" "}
-                      {lang === "bn" ? "ফসলের তারিখ" : "Harvest Date"}: {batch.harvest_date}
-                    </div>
-
-                    {/* Intervention Inputs */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-                      <input
-                        type="text"
-                        placeholder={lang === "bn" ? "Intervention Type" : "Action Type"}
-                        value={inputState.interventionType}
-                        onChange={(e) =>
-                          setBatchInputs((prev) => ({
-                            ...prev,
-                            [batch.id]: { ...inputState, interventionType: e.target.value },
-                          }))
-                        }
-                        className="border p-2 rounded w-full"
-                      />
-                      <input
-                        type="number"
-                        placeholder={lang === "bn" ? "Success Score" : "Score"}
-                        value={inputState.interventionScore}
-                        onChange={(e) =>
-                          setBatchInputs((prev) => ({
-                            ...prev,
-                            [batch.id]: { ...inputState, interventionScore: Number(e.target.value) },
-                          }))
-                        }
-                        className="border p-2 rounded w-full"
-                      />
-                      <input
-                        type="text"
-                        placeholder={lang === "bn" ? "Notes" : "Notes"}
-                        value={inputState.interventionNotes}
-                        onChange={(e) =>
-                          setBatchInputs((prev) => ({
-                            ...prev,
-                            [batch.id]: { ...inputState, interventionNotes: e.target.value },
-                          }))
-                        }
-                        className="border p-2 rounded w-full"
-                      />
-                    </div>
-
-                    {/* Loss Inputs */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-                      <input
-                        type="text"
-                        placeholder={lang === "bn" ? "Loss Type" : "Loss Type"}
-                        value={inputState.lossType}
-                        onChange={(e) =>
-                          setBatchInputs((prev) => ({
-                            ...prev,
-                            [batch.id]: { ...inputState, lossType: e.target.value },
-                          }))
-                        }
-                        className="border p-2 rounded w-full"
-                      />
-                      <input
-                        type="number"
-                        placeholder={lang === "bn" ? "Amount" : "Amount"}
-                        value={inputState.lossAmount}
-                        onChange={(e) =>
-                          setBatchInputs((prev) => ({
-                            ...prev,
-                            [batch.id]: { ...inputState, lossAmount: Number(e.target.value) },
-                          }))
-                        }
-                        className="border p-2 rounded w-full"
-                      />
-                      <input
-                        type="text"
-                        placeholder={lang === "bn" ? "Description" : "Description"}
-                        value={inputState.lossDescription}
-                        onChange={(e) =>
-                          setBatchInputs((prev) => ({
-                            ...prev,
-                            [batch.id]: { ...inputState, lossDescription: e.target.value },
-                          }))
-                        }
-                        className="border p-2 rounded w-full"
-                      />
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        submitBatchUpdate(
-                          batch.id,
-                          {
-                            type: inputState.interventionType,
-                            score: inputState.interventionScore,
-                            notes: inputState.interventionNotes,
-                          },
-                          {
-                            type: inputState.lossType,
-                            amount: inputState.lossAmount,
-                            description: inputState.lossDescription,
-                          }
-                        )
+                  {/* Intervention Inputs */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                    <input
+                      type="text"
+                      placeholder={lang === "bn" ? "ইন্টারভেনশন টাইপ" : "Action Type"}
+                      value={inputState.interventionType}
+                      onChange={(e) =>
+                        setBatchInputs((prev) => ({
+                          ...prev,
+                          [batch.id]: { ...inputState, interventionType: e.target.value },
+                        }))
                       }
-                      className="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto"
-                    >
-                      {lang === "bn" ? "Submit" : "Submit"}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
+                      className="border border-gray-300 p-2 rounded-lg w-full bg-gray-50"
+                    />
+                    <input
+                      type="number"
+                      placeholder={lang === "bn" ? "স্কোর" : "Score"}
+                      value={inputState.interventionScore}
+                      onChange={(e) =>
+                        setBatchInputs((prev) => ({
+                          ...prev,
+                          [batch.id]: { ...inputState, interventionScore: Number(e.target.value) },
+                        }))
+                      }
+                      className="border border-gray-300 p-2 rounded-lg w-full bg-gray-50"
+                    />
+                    <input
+                      type="text"
+                      placeholder={lang === "bn" ? "নোটস" : "Notes"}
+                      value={inputState.interventionNotes}
+                      onChange={(e) =>
+                        setBatchInputs((prev) => ({
+                          ...prev,
+                          [batch.id]: { ...inputState, interventionNotes: e.target.value },
+                        }))
+                      }
+                      className="border border-gray-300 p-2 rounded-lg w-full bg-gray-50"
+                    />
+                  </div>
 
-        
-        {/* Interventions */}
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold mb-2">
-            {lang === "bn" ? "ইন্টারভেনশনসমূহ" : "Interventions"}
-          </h2>
+                  {/* Loss Inputs */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
+                    <input
+                      type="text"
+                      placeholder={lang === "bn" ? "ক্ষতির ধরন" : "Loss Type"}
+                      value={inputState.lossType}
+                      onChange={(e) =>
+                        setBatchInputs((prev) => ({
+                          ...prev,
+                          [batch.id]: { ...inputState, lossType: e.target.value },
+                        }))
+                      }
+                      className="border border-gray-300 p-2 rounded-lg bg-gray-50"
+                    />
+                    <input
+                      type="number"
+                      placeholder={lang === "bn" ? "পরিমাণ" : "Amount"}
+                      value={inputState.lossAmount}
+                      onChange={(e) =>
+                        setBatchInputs((prev) => ({
+                          ...prev,
+                          [batch.id]: { ...inputState, lossAmount: Number(e.target.value) },
+                        }))
+                      }
+                      className="border border-gray-300 p-2 rounded-lg bg-gray-50"
+                    />
+                    <input
+                      type="text"
+                      placeholder={lang === "bn" ? "বর্ণনা" : "Description"}
+                      value={inputState.lossDescription}
+                      onChange={(e) =>
+                        setBatchInputs((prev) => ({
+                          ...prev,
+                          [batch.id]: { ...inputState, lossDescription: e.target.value },
+                        }))
+                      }
+                      className="border border-gray-300 p-2 rounded-lg bg-gray-50"
+                    />
+                  </div>
 
-          {interventions.length ? (
-            <ul className="space-y-2">
-              {interventions.map((iv) => {
-                const batch = batches.find((b) => b.id === iv.batch_id);
-                const batchLabel = batch
-                  ? `${batch.crop_type}${
-                      batch.status === "updated"
-                        ? lang === "bn"
-                          ? " (আপডেট করা হয়েছে)"
-                          : " (Updated)"
-                        : ""
-                    }`
-                  : "Unknown Batch";
+                  <button
+                    onClick={() =>
+                      submitBatchUpdate(
+                        batch.id,
+                        {
+                          type: inputState.interventionType,
+                          score: inputState.interventionScore,
+                          notes: inputState.interventionNotes,
+                        },
+                        {
+                          type: inputState.lossType,
+                          amount: inputState.lossAmount,
+                          description: inputState.lossDescription,
+                        }
+                      )
+                    }
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg w-full mt-1 active:scale-95 transition"
+                  >
+                    {lang === "bn" ? "সাবমিট করুন" : "Submit"}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
-                return (
-                  <li key={iv.id} className="p-3 bg-white rounded-lg shadow w-full">
-                    {/* Batch Name */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "ব্যাচ:" : "Batch:"}</span>{" "}
-                      {batchLabel}
-                    </p>
+      {/* Interventions */}
+      <section className="mt-8 bg-white p-4 rounded-xl border border-gray-300">
+        <h2 className="text-xl font-semibold mb-2">{lang === "bn" ? "ইন্টারভেনশনসমূহ" : "Interventions"}</h2>
+        {interventions.length ? (
+          <ul className="space-y-2">
+            {interventions.map((iv) => {
+              const batch = batches.find((b) => b.id === iv.batch_id);
+              const batchLabel = batch ? batch.crop_type : "Unknown Batch";
 
-                    {/* Action Type */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "ধরন:" : "Type:"}</span>{" "}
-                      {iv.action_type}
-                    </p>
+              return (
+                <li key={iv.id} className="p-4 bg-gray-50 rounded-lg border border-gray-300">
+                  <p><span className="font-semibold">{lang === "bn" ? "ব্যাচ:" : "Batch:"}</span> {batchLabel}</p>
+                  <p><span className="font-semibold">{lang === "bn" ? "ধরন:" : "Type:"}</span> {iv.action_type}</p>
+                  <p><span className="font-semibold">{lang === "bn" ? "স্কোর:" : "Score:"}</span> {iv.success_score}</p>
+                  <p><span className="font-semibold">{lang === "bn" ? "তারিখ:" : "Date:"}</span> {new Date(iv.action_date).toLocaleDateString()}</p>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-gray-600">{lang === "bn" ? "কোনো ইন্টারভেনশন নেই।" : "No interventions found."}</p>
+        )}
+      </section>
 
-                    {/* Score */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "সাফল্য স্কোর:" : "Success Score:"}</span>{" "}
-                      {iv.success_score}
-                    </p>
+      {/* Loss Events */}
+      <section className="mt-8 bg-white p-4 rounded-xl border border-gray-300">
+        <h2 className="text-xl font-semibold mb-2">{lang === "bn" ? "নাশ হওয়া ঘটনা" : "Loss Events"}</h2>
+        {lossEvents.length ? (
+          <ul className="space-y-2">
+            {lossEvents.map((event) => {
+              const batch = batches.find((b) => b.id === event.batch_id);
+              const batchLabel = batch ? batch.crop_type : "Unknown Batch";
 
-                    {/* Action Date */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "তারিখ:" : "Date:"}</span>{" "}
-                      {new Date(iv.action_date).toLocaleDateString(lang === "bn" ? "bn-BD" : "en-US")}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p>{lang === "bn" ? "কোন ইন্টারভেনশন পাওয়া যায়নি।" : "No interventions found."}</p>
-          )}
-        </section>
+              return (
+                <li key={event.id} className="p-4 bg-gray-50 rounded-lg border border-gray-300">
+                  <p><span className="font-semibold">{lang === "bn" ? "ব্যাচ:" : "Batch:"}</span> {batchLabel}</p>
+                  <p><span className="font-semibold">{lang === "bn" ? "ধরন:" : "Type:"}</span> {event.loss_type}</p>
+                  <p><span className="font-semibold">{lang === "bn" ? "পরিমাণ:" : "Amount:"}</span> {event.loss_amount}</p>
+                  <p><span className="font-semibold">{lang === "bn" ? "তারিখ:" : "Date:"}</span> {new Date(event.event_date).toLocaleDateString()}</p>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-gray-600">{lang === "bn" ? "কোনো ঘটনা পাওয়া যায়নি।" : "No loss events found."}</p>
+        )}
+      </section>
 
-        {/* Loss Events */}
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold mb-2">{lang === "bn" ? "নাশ হওয়া ঘটনা" : "Loss Events"}</h2>
+      {/* Badges */}
+      <section className="mt-8 bg-white p-4 rounded-xl border border-gray-300">
+        <h2 className="text-xl font-semibold mb-3">{lang === "bn" ? "ব্যাজসমূহ" : "Earned Badges"}</h2>
+        {earnedBadges.length ? (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            {earnedBadges.map((b) => (
+              <div key={b.badges.id} className="p-3 bg-green-100 rounded-xl text-center border border-gray-300">
+                <div className="text-3xl">{b.badges.icon}</div>
+                <div className="text-sm text-gray-700 mt-1">{b.badges.title}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600">{lang === "bn" ? "কোনো ব্যাজ পাওয়া যায়নি।" : "No badges found."}</p>
+        )}
+      </section>
 
-          {lossEvents.length ? (
-            <ul className="space-y-2">
-              {lossEvents.map((event) => {
-                const batch = batches.find((b) => b.id === event.batch_id);
-                const batchLabel = batch
-                  ? `${batch.crop_type}${
-                      batch.status === "updated"
-                        ? lang === "bn"
-                          ? " (আপডেট করা হয়েছে)"
-                          : " (Updated)"
-                        : ""
-                    }`
-                  : "Unknown Batch";
-
-                return (
-                  <li key={event.id} className="p-3 bg-white rounded-lg shadow w-full">
-                    {/* Batch Name */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "ব্যাচ:" : "Batch:"}</span>{" "}
-                      {batchLabel}
-                    </p>
-
-                    {/* Loss Type */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "ধরন:" : "Type:"}</span>{" "}
-                      {event.loss_type}
-                    </p>
-
-                    {/* Loss Amount */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "পরিমাণ:" : "Amount:"}</span>{" "}
-                      {event.loss_amount || "-"}
-                    </p>
-
-                    {/* Event Date */}
-                    <p>
-                      <span className="font-medium">{lang === "bn" ? "তারিখ:" : "Date:"}</span>{" "}
-                      {new Date(event.event_date).toLocaleDateString(lang === "bn" ? "bn-BD" : "en-US")}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p>{lang === "bn" ? "কোনো নাশ হওয়া ঘটনা নেই।" : "No loss events found."}</p>
-          )}
-        </section>
-
-        {/* Earned Badges */}
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold mb-2">{lang === "bn" ? "প্রাপ্ত ব্যাজসমূহ" : "Earned Badges"}</h2>
-          {earnedBadges.length ? (
-            <div className="flex flex-wrap gap-4">
-              {earnedBadges.map((b) => (
-                <div
-                  key={b.badges.id}
-                  className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl shadow-md w-28"
-                >
-                  <div className="text-3xl mb-2">{b.badges.icon}</div>
-                  <div className="text-sm font-medium text-gray-800 text-center">{b.badges.title}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>{lang === "bn" ? "কোনো ব্যাজ পাওয়া যায়নি।" : "No badges found."}</p>
-          )}
-        </section>
-
-        <div className="mt-10 flex flex-wrap gap-4">
-          <button className="bg-blue-500 text-white px-5 py-2 rounded-lg" onClick={exportJSON}>
-            {lang === "bn" ? "JSON এক্সপোর্ট করুন" : "Export JSON"}
-          </button>
-          <button className="bg-green-500 text-white px-5 py-2 rounded-lg" onClick={exportCSV}>
-            {lang === "bn" ? "CSV এক্সপোর্ট করুন" : "Export CSV"}
-          </button>
-        </div>
-      
+      {/* Export Buttons */}
+      <div className="mt-10 flex flex-wrap gap-3">
+        <button className="bg-blue-600 text-white px-5 py-2 rounded-lg" onClick={exportJSON}>
+          {lang === "bn" ? "JSON এক্সপোর্ট" : "Export JSON"}
+        </button>
+        <button className="bg-green-600 text-white px-5 py-2 rounded-lg" onClick={exportCSV}>
+          {lang === "bn" ? "CSV এক্সপোর্ট" : "Export CSV"}
+        </button>
       </div>
     </div>
-  );
+  </div>
+);
 }

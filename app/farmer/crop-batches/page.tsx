@@ -104,50 +104,132 @@ export default function CropBatchForm() {
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow-md w-full max-w-lg">
-      <h2 className="text-xl font-bold mb-4">নতুন ফসলের ব্যাচ রেজিস্টার করুন</h2>
+return (
+  <form
+    onSubmit={handleSubmit}
+    className="w-full max-w-lg mx-auto bg-white rounded-xl shadow-lg p-5 sm:p-6 space-y-4 text-[15px]"
+  >
+    {/* Title */}
+    <h2 className="text-2xl font-bold text-center text-green-700">
+      ফসলের ব্যাচ রেজিস্ট্রেশন
+    </h2>
+    <p className="text-center text-gray-600 text-sm">
+      নিচের তথ্যগুলো সঠিকভাবে পূরণ করুন
+    </p>
 
-      {msg && (
-        <div className={`mb-4 p-3 border-2 rounded shadow ${
+    {/* Alert Message */}
+    {msg && (
+      <div
+        className={`p-3 rounded-lg border ${
           msgType === "success"
-            ? "border-green-600 bg-green-50 text-green-700"
-            : "border-red-600 bg-red-50 text-red-700"
-        }`}>
-          {msg}
-        </div>
-      )}
+            ? "bg-green-50 border-green-600 text-green-700"
+            : "bg-red-50 border-red-600 text-red-700"
+        }`}
+      >
+        {msg}
+      </div>
+    )}
 
-      <label>ফসলের ধরণ</label>
-      <select value={cropType} onChange={(e) => setCropType(e.target.value)} className="w-full p-2 mb-4 border rounded">
-        <option value="Paddy">ধান (Paddy)</option>
-        <option value="Rice">চাল (Rice)</option>
-      </select>
+    {/* Section: Crop Details */}
+    <div className="bg-gray-50 p-4 rounded-lg border border-gray-300 space-y-3">
+      <h3 className="font-semibold text-gray-800 border-b border-gray-300 pb-1">
+        ফসলের তথ্য
+      </h3>
 
-      <label>অনুমানিত ওজন (কেজি)</label>
-      <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} className="w-full p-2 mb-4 border rounded" required />
+      <div>
+        <label className="block mb-1 font-medium">ফসলের ধরণ</label>
+        <select
+          value={cropType}
+          onChange={(e) => setCropType(e.target.value)}
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+        >
+          <option value="Paddy">ধান (Paddy)</option>
+          <option value="Rice">চাল (Rice)</option>
+        </select>
+      </div>
 
-      <label>ফসলের তারিখ</label>
-      <input type="date" value={harvestDate} onChange={(e) => setHarvestDate(e.target.value)} className="w-full p-2 mb-4 border rounded" required />
+      <div>
+        <label className="block mb-1 font-medium">অনুমানিত ওজন (কেজি)</label>
+        <input
+          type="number"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+          placeholder="যেমন: ৫০"
+        />
+      </div>
 
-      <label>স্টোরেজ বিভাগ</label>
-      <select value={division} onChange={handleDivisionChange} className="w-full p-2 mb-4 border rounded">
-        {divisions.map((d) => <option key={d} value={d}>{d}</option>)}
-      </select>
+      <div>
+        <label className="block mb-1 font-medium">ফসল কাটার তারিখ</label>
+        <input
+          type="date"
+          value={harvestDate}
+          onChange={(e) => setHarvestDate(e.target.value)}
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+    </div>
 
-      <label>স্টোরেজ জেলা</label>
-      <select value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full p-2 mb-4 border rounded">
-        {districts[division].map((d) => <option key={d} value={d}>{d}</option>)}
-      </select>
+    {/* Section: Storage Details */}
+    <div className="bg-gray-50 p-4 rounded-lg border border-gray-300 space-y-3">
+      <h3 className="font-semibold text-gray-800 border-b border-gray-300 pb-1">
+        স্টোরেজ তথ্য
+      </h3>
 
-      <label>স্টোরেজ ধরণ</label>
-      <select value={storageType} onChange={(e) => setStorageType(e.target.value)} className="w-full p-2 mb-4 border rounded">
-        {storageTypes.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-      </select>
+      <div>
+        <label className="block mb-1 font-medium">বিভাগ</label>
+        <select
+          value={division}
+          onChange={handleDivisionChange}
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+        >
+          {divisions.map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <button type="submit" disabled={loading} className="w-full p-3 bg-green-600 text-white rounded">
-        {loading ? "প্রসেস হচ্ছে..." : "ব্যাচ রেজিস্টার করুন"}
-      </button>
-    </form>
-  );
+      <div>
+        <label className="block mb-1 font-medium">জেলা</label>
+        <select
+          value={district}
+          onChange={(e) => setDistrict(e.target.value)}
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+        >
+          {districts[division].map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-medium">স্টোরেজ ধরণ</label>
+        <select
+          value={storageType}
+          onChange={(e) => setStorageType(e.target.value)}
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+        >
+          {storageTypes.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    {/* Submit Button */}
+    <button
+      type="submit"
+      disabled={loading}
+      className="w-full bg-green-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md active:scale-95 transition"
+    >
+      {loading ? "প্রসেস হচ্ছে..." : "ব্যাচ রেজিস্টার করুন"}
+    </button>
+  </form>
+);
 }
