@@ -191,7 +191,7 @@ export default function FarmerDashboard({ profile, batches }: any) {
     {
       title: t.alertSystemSection.title,
       desc: t.alertSystemSection.desc,
-      route: "/alerts",
+      route: "/alert-system",
       icon: "/icons/alert.png",
       color: "from-black-200 to-teal-100",
     },
