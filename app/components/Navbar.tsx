@@ -17,6 +17,8 @@ const ALL_MENU_LINKS = [
   { label: { bn: "স্থানীয় ঝুঁকি মানচিত্র", en: "Local Risk Map" }, href: "/risk-map", auth: null },
   { label: { bn: "প্রশ্নোত্তর", en: "QnA" }, href: "/qna", auth: null },
   { label: { bn: "লগইন করুন", en: "Login" }, href: "/login", auth: false },
+  { label: { bn: "কীটপতঙ্গ স্ক্যান করুন", en: "Pest Identify" }, href: "/pest", auth: null },
+  { label: { bn: "সতর্কতা সিস্টেম", en: "Alert System" }, href: "/alert-system", auth: null },
 ];
 
 export default function Navbar() {
@@ -65,17 +67,15 @@ export default function Navbar() {
           <div className="hidden md:flex gap-2">
             <button
               onClick={() => setLang("bn")}
-              className={`px-3 py-1 rounded ${
-                lang === "bn" ? "bg-yellow-400 text-green-900" : "hover:bg-yellow-300"
-              }`}
+              className={`px-3 py-1 rounded ${lang === "bn" ? "bg-yellow-400 text-green-900" : "hover:bg-yellow-300"
+                }`}
             >
               বাংলা
             </button>
             <button
               onClick={() => setLang("en")}
-              className={`px-3 py-1 rounded ${
-                lang === "en" ? "bg-yellow-400 text-green-900" : "hover:bg-yellow-300"
-              }`}
+              className={`px-3 py-1 rounded ${lang === "en" ? "bg-yellow-400 text-green-900" : "hover:bg-yellow-300"
+                }`}
             >
               EN
             </button>
@@ -118,12 +118,26 @@ export default function Navbar() {
         <div className="hidden md:block border-t border-green-500" />
 
         {/* Desktop menu */}
-        <div className="hidden md:flex flex-wrap gap-4 mt-2 justify-center">
+        <div className="
+            hidden md:grid 
+            grid-cols-2 
+            lg:grid-cols-5 
+            gap-x-2 gap-y-1 
+            mt-2 justify-center
+            place-items-center
+          ">
           {MENU_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="px-3 py-2 rounded hover:bg-green-500 transition"
+              className="
+        px-3 py-2 
+        rounded 
+        text-center
+        hover:bg-green-500 
+        transition 
+        w-full
+      "
             >
               {link.label[lang]}
             </Link>
