@@ -27,7 +27,7 @@
     "jotai": "^2.15.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "next": "16.0.4",
+    "next": "16.0.10",
     "next-i18next": "^15.4.2",
     "papaparse": "^5.5.3",
     "react": "19.2.0",
