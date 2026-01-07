@@ -84,11 +84,20 @@ export default function QnAPage() {
 
     setReplyText(lang === "bn" ? "উত্তর অপেক্ষা করুন..." : "Please wait...");
 
+    // Construct a strict prompt based on language
+    const restrictedPrompt = lang === "bn"
+      ? `আপনি একজন কৃষি বিশেষজ্ঞ। আপনি শুধুমাত্র কৃষি, আবহাওয়া, ফসলের স্বাস্থ্য, ফসলের বিবরণ এবং কৃষিকাজ সম্পর্কিত প্রশ্নের উত্তর দেবেন। যদি প্রশ্নটি এই বিষয়গুলোর বাইরে হয়, তবে বিনয়ের সাথে বলুন যে আপনি শুধুমাত্র কৃষি সম্পর্কিত বিষয়ে সাহায্য করতে পারেন।
+      
+      প্রশ্ন: ${text}`
+      : `You are an agriculture expert. You strictly only answer questions related to farming, agriculture, weather, crop health, and crop details. If the question is not related to these topics, politely decline and state that you can only assist with agriculture-related queries.
+      
+      Question: ${text}`;
+
     try {
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: text, lang }),
+        body: JSON.stringify({ prompt: restrictedPrompt }),
       });
 
       const raw = await response.text();
@@ -132,43 +141,58 @@ export default function QnAPage() {
       <button
         onClick={startListening}
         disabled={listening}
-        className={`${
-          listening ? "bg-red-600 animate-pulse" : "bg-green-600 hover:bg-green-700"
-        } disabled:opacity-50 text-white px-8 md:px-12 py-4 md:py-6 text-xl md:text-2xl rounded-2xl shadow-xl transition-all font-bold mb-6`}
+        className={`${listening ? "bg-red-600 animate-pulse" : "bg-green-600 hover:bg-green-700"
+          } disabled:opacity-50 text-white px-8 md:px-12 py-4 md:py-6 text-xl md:text-2xl rounded-2xl shadow-xl transition-all font-bold mb-6`}
       >
         {listening
           ? lang === "bn"
             ? "🎤 শুনছি..."
             : "🎤 Listening..."
           : lang === "bn"
-          ? "🎤 প্রশ্ন করতে কথা বলুন"
-          : "🎤 Speak to ask"}
+            ? "🎤 প্রশ্ন করতে কথা বলুন"
+            : "🎤 Speak to ask"}
       </button>
 
-      {/* Text Input */}
-      <div className="w-full max-w-md mx-auto mb-6 relative">
+      {/* Text Input Area */}
+      <div className="w-full max-w-3xl mx-auto mb-8 relative bg-white rounded-3xl shadow-lg border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-green-400 focus-within:border-green-400 transition-all duration-300">
         <textarea
           value={userText}
           onChange={(e) => setUserText(e.target.value)}
-          placeholder={lang === "bn" ? "আপনার প্রশ্ন লিখুন..." : "Type your question..."}
-          rows={1}
-          className="w-full border border-gray-300 rounded-2xl px-4 py-3 pr-20 text-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all placeholder-gray-400 resize-none overflow-auto"
+          placeholder={lang === "bn" ? "আপনার কৃষি বিষয়ক বিস্তারিত প্রশ্ন এখানে লিখুন..." : "Type your detailed agriculture question here..."}
+          className="w-full min-h-[120px] max-h-[300px] bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-4 text-gray-700 text-lg placeholder-gray-400 resize-y rounded-xl"
+          style={{ scrollbarWidth: "thin" }}
         />
-        <button
-          onClick={() => handleUserQuestion(userText)}
-          className="absolute right-2 top-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-semibold shadow-md transition-colors"
-        >
-          {lang === "bn" ? "পাঠান" : "Send"}
-        </button>
+
+        <div className="flex justify-between items-center px-2 pb-2 mt-2">
+          <span className="text-xs text-gray-400 ml-2">
+            {userText.length} {lang === "bn" ? "অক্ষর" : "chars"}
+          </span>
+          <button
+            onClick={() => handleUserQuestion(userText)}
+            disabled={!userText.trim() || replyText.includes("wait") || replyText.includes("অপেক্ষা")}
+            className={`
+                px-8 py-2.5 rounded-xl font-bold text-white shadow-md transition-all 
+                ${!userText.trim() ? "bg-gray-300 cursor-not-allowed" : "bg-gradient-to-r from-green-600 to-green-500 hover:scale-105 active:scale-95"}
+              `}
+          >
+            {lang === "bn" ? "পাঠান 🚀" : "Send 🚀"}
+          </button>
+        </div>
       </div>
 
-      {/* Reply */}
+      {/* Reply Section */}
       {replyText && (
-        <div className="w-full max-w-xl bg-white p-6 rounded-xl shadow-lg border-2 border-green-200">
-          <div className="prose prose-sm sm:prose lg:prose-lg text-gray-800">
-            <ReactMarkdown>
-              {replyText}
-            </ReactMarkdown>
+        <div className="w-full max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-green-100 animate-fade-in-up">
+          <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-3">
+            <div className="bg-green-100 p-2 rounded-full">
+              <span className="text-2xl">🤖</span>
+            </div>
+            <h3 className="text-lg font-bold text-green-800">
+              {lang === "bn" ? "কৃষি বিশেষজ্ঞের উত্তর:" : "Expert Answer:"}
+            </h3>
+          </div>
+          <div className="prose prose-lg text-gray-700 leading-relaxed max-w-none">
+            <ReactMarkdown>{replyText}</ReactMarkdown>
           </div>
         </div>
       )}
