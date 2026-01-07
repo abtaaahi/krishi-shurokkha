@@ -17,12 +17,24 @@ interface WeatherData {
   condition: string;
 }
 
+type RiskLevel = "Low" | "Medium" | "High" | "Critical";
+
+interface BatchItem {
+  id: string;
+  crop_type: string;
+  district: string;
+  weather: WeatherData | null;
+  loadingAnalysis: boolean;
+  risk?: RiskLevel;
+  advice?: string;
+}
+
 interface AlertPayload {
   id: string;
   crop_type: string;
   district: string;
   weather: WeatherData;
-  risk: "Low" | "Medium" | "High" | "Critical";
+  risk: RiskLevel;
   alert: string;
 }
 
